@@ -1,0 +1,206 @@
+\documentclass{article}
+
+%设置页边距
+\usepackage{float}
+\usepackage{geometry}
+%\usepackage{fancybox}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+
+\geometry{left=2cm,right=2cm,top=2cm,bottom=2cm}
+
+%插入代码
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    numbers=left,
+    numberstyle=\scriptsize,
+    keywordstyle=\color{red!80},
+    commentstyle=\color{red!50!green!50!blue!50}\bf,
+    frame=trbl,
+    rulesepcolor=\color{red!20!green!20!blue!20},
+    backgroundcolor=\color[RGB]{245,245,244},
+    escapeinside=``,
+    showstringspaces=false,
+    xleftmargin=5em,xrightmargin=5em,
+    aboveskip=1em,
+    framexleftmargin=2em,
+}
+%\begin{lstlisting}[language=C++]
+%\end{lstlisting}
+
+%设置中文
+\usepackage{ctex}
+\usepackage{algorithm}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm  
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+
+\title{091M4041H - Algorithm Design and Analysis\\ [2ex] \begin{large} Assignment 5 NF\end{large}}
+%\title{Assignment 1}
+\author{崔天宇\quad201818018670007}
+\date{January 6, 2018}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Load Balance}
+You have some different computers and jobs. For each job, it can only be done on one of two specified computers. The load of a computer is the number of jobs which have been done on the computer. Give the number of jobs and two computer ID for each job. You task is to minimize the max load. 
+
+(hint: binary search)
+
+\subsection{Algorithm Description and Pseudo-code}
+假设有m个job和n个computer，并且每个job可以选择2个computer中的一个完成工作，因此考虑建图如下：\\
+
+
+1. 建立超级源点和超级汇点，超级源点和m个job相连并且由源点指向每个job，边的容量为1；
+
+2. n个computer与超级汇点相连接，并且每个computer指向汇点，边的容量记为c，表示n台computer中的最大负载；
+
+3. 每个job与其对应可选的两个computer相连，由job指向computer。\\
+
+
+采用二分搜索来猜测c，若t能收到的流为m，说明c偏大，可以继续缩小，直到t刚好不能收到m。
+
+\begin{algorithm}[htbp]  
+  \caption{Search the minimum of the max load on computers.}  
+  \begin{algorithmic}[1] 
+    \Function {LoadBalance}{} 
+	\For each job
+	\State add edge ($job_i$, $computer_a$) and ($job_i$, $computer_b$) and capacity $c_i = 1.$
+	\EndFor
+	\State add node s and t
+	\State add edge (s, $job_i$) and capacity $c_i = 1$
+	\State L = 1, R = m + 1
+	\State add edge ($computer_i$, t) and capacity $c_i = (L + R)/ 2$
+	\While{$L < R$}
+	\State mid = (L + R) / 2
+ 	\State change capacity $c_i$ of edge ($computer_i$, t) to mid
+	\If{max\_flow(s,t) == m}
+	\State R = mid
+	\Else
+	\State L = mid + 1
+	\EndIf
+	\EndWhile
+	\State return L
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+每个computer到汇点t的容量上限为c，使computer的最大负载不超过c
+
+使用二分搜索猜测c的值，因为c的取值范围为[1,m]所以每次缩减L和R两个边界缩小c的取值，若使用(L + R)/2得到最大流为m，则将R取中值，表示实际最小c应该比中值小，同理若不能取得流m，则实际最小c应该比中值大，因此通过控制L和R此算法必定收敛。
+
+\subsection{Complexity Analysis}
+由二分搜索，共需执行log(m)次最大流，若采用Dinitz算法计算最大流，其时间复杂度为O($N^2M$)，其中N = m + n + 2, M = m + 2m + n，因此算法的时间复杂度为
+
+\begin{equation}
+T(n) = O((m + n)^3log(m))
+\end{equation}
+
+\newpage
+\section{Matrix}
+For a matrix filled with 0 and 1, you know the sum of every row and column. You are asked to give such a matrix which satisfys the conditions.
+
+
+\subsection{Algorithm Description and Pseudo-code}
+假设矩阵为m行n列，其中的点（n, m）看作一条有向边，因此考虑建图如下：\\
+
+1. 构建超级源点和超级汇点，超级源点指向所有行节点m，容量为对应行和；所有列节点n指向超级汇点，容量为对应列和
+
+2. 将矩阵中的点(m,n)表示行节点m指向列节点n，容量为1\\
+
+当进行最大流算法时，若源点s的每个出边和汇点t的每个入边都是满流的，则说明符合条件,并且若行节点和列节点之间满流则说明其有值，对应值即为1-剩余容量。
+
+\begin{algorithm}[htbp]  
+  \caption{Search matrix which satisfys the conditions..}  
+  \begin{algorithmic}[1] 
+    \Function {SearchMatrix}{matrix(m,n)} 
+	\State s = 0
+	\State t = m + n + 1
+	\For{i from 1 to m}
+	\State add\_edge(0, i, row[i - 1])
+	\For{j from m + 1 to m + n}
+	\State add\_edge(i, j, 1)
+	\EndFor
+	\EndFor
+	\For{i from m + 1 to m + n}
+	\State add\_edge(i, t, col[i - m - 1])
+	\EndFor
+	\State max\_flow(m, n, s, t)
+	\For{i from 1 to m}
+	\For{j form 1 to n}
+	\State matrix[i-1][j-1] = 1 - $c_{ij}$
+	\EndFor
+	\EndFor
+	\State return matrix
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+由源点的出边即限定了每一行的行和，由汇点的入边即限定了每一列的列和，中间的行节点到列节点容量即限定了矩阵中的节点取值，因此条件限制成立，若源点的出边和汇点的入边均满流，则原问题有可行解。
+
+\subsection{Complexity Analysis}
+时间复杂度即为最大流时间，若采用Dinitz算法最大流时间为O($N^2M$),其中N =m + n + 2, M = m + n + mn。因此算法的时间复杂度为: 
+
+\begin{equation}
+T(n) = O(mn(m + n)^2)
+\end{equation}
+
+\newpage
+\section{Problem Reduction}
+There is a matrix with numbers which means the cost when you walk through this point. you are asked to walk through the matrix from the top left point to the right bottom point and then return to the top left point with the minimal cost. Note that when you walk from the top to the bottom you can just walk to the right or bottom point and when you return, you can just walk to the top or left point. And each point CAN NOT be walked through more than once.
+
+
+
+\subsection{Algorithm Description and Pseudo-code}
+假设矩阵m行n列，则考虑建图如下：\\
+
+对于每一个矩阵内的节点，都将其转化为一条边($node1_{ij}$, $node2_{ij}$)，其容量为1，以限制每个节点仅经过1次，将矩阵最左上角的节点建设的边($node1_{00}$, $node2_{00}$)的容量设为2，以保证其出发和返回共经过两次，费用为Matrix[i][j]。且将$node1_{00}$设为s源点，同理，矩阵最右下角的节点建设的边($node1_{m-1n-1}$, $node2_{m-1n-1}$)的容量设为2，以保证其出发和返回共经过两次，且将$node2_{m-1n-1}$设为t汇点，每个矩阵中的节点只向左上和右下节点移动，即每个节点的$node2_{ij}$分别与$node1_{i+1j}$和$node1_{ij+1}$建立连边，且容量为1，费用为0，即将问题转化为求取最大流问题。
+
+\begin{algorithm}[htbp]  
+  \caption{Search path in the matrix}  
+  \begin{algorithmic}[1] 
+    \Function {LoadBalance}{Matrix} 
+	\For each (i,j) in Matrix
+	\If (i = 0 and j = 0) or (i = m-1 and j = n-1)
+	\State add edge ($node1_{ij}, node2_{ij}$), capacity c = 2, cost e = Matrix[i][j]
+	\Else
+	\State add edge ($node1_{ij}, node2_{ij}$), capacity c = 1, cost e = Matrix[i][j]
+	\EndIf
+	\If i < m - 1 
+	\State add edge ($node2_{ij}, node1{i+1j}$), capacity c = 1, cost e = 0
+	\EndIf
+	\If j < n - 1
+	\State add edge ($node2_{ij}, node1{ij+1}$), capacity c = 1, cost e = 0
+	\EndIf
+	\EndFor
+	\State solve\_min\_cost\_flow(2)
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+对于每一个矩阵内的节点，都将其转化为一条边其容量为1，费用为矩阵节点值，以限制每个节点仅经过1次不重复。对于每个节点化成的边的末节点都与其下边和右边的节点所化边的头结点相连，其容量为1，费用为0，以限制每次只走右边和下边且不重复。对于源点和汇点边容量设为2，以保证其往返两条流。
+
+因此算法转化为最小费用流问题，且流位2，算法必定收敛。
+
+
+\subsection{Complexity Analysis}
+若用Bellman\_Ford求最短路，时间复杂度为O(2VE),如果采用二叉堆的 Dijkstra，时间复杂度为O(2ElogV)。
+
+\begin{equation}
+T(n) = O(ElogV)
+\end{equation}
+
+\end{CJK*}
+\end{document}

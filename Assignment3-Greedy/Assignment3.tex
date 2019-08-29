@@ -1,0 +1,288 @@
+\documentclass{article}
+
+%设置页边距
+\usepackage{float}
+\usepackage{geometry}
+%\usepackage{fancybox}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+
+\geometry{left=2cm,right=2cm,top=2cm,bottom=2cm}
+
+%插入代码
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    numbers=left,
+    numberstyle=\scriptsize,
+    keywordstyle=\color{red!80},
+    commentstyle=\color{red!50!green!50!blue!50}\bf,
+    frame=trbl,
+    rulesepcolor=\color{red!20!green!20!blue!20},
+    backgroundcolor=\color[RGB]{245,245,244},
+    escapeinside=``,
+    showstringspaces=false,
+    xleftmargin=5em,xrightmargin=5em,
+    aboveskip=1em,
+    framexleftmargin=2em,
+}
+%\begin{lstlisting}[language=C++]
+%\end{lstlisting}
+
+%设置中文
+\usepackage{ctex}
+\usepackage{algorithm}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm  
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+
+\title{091M4041H - Algorithm Design and Analysis\\ [2ex] \begin{large} Assignment 3 \end{large}}
+%\title{Assignment 1}
+\author{崔天宇\quad201818018670007}
+\date{November 10, 2018}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Problem One}
+Given a list of n natural numbers $d_1, d_2,...,d_n$, show how to decide in polynomial time whether there exists an undirected graph G = (V, E) whose node degrees are precisely the numbers $d_1, d_2,..., d_n$. G should not contain multiple edges between the same pair of nodes, or "loop" edges with both endpoints equal to the same node.
+
+\subsection{Optimal Substructure and greedy-choice property}
+考虑每次选择一个节点出列，则其他的节点的度数均会减一。贪心的选择是每次寻找最大每次选择度数最大的节点$d_1$出列，其他所有的度数减一。因此贪心选择为公式（1）所示：
+
+\begin{equation}
+choose\ max\{d_1,d_2,...,d_n\} 
+\end{equation} 
+
+最优子结构为公式（2）所示：
+\begin{equation}
+OPT(d_1,d_2,...,d_n) = OPT(d_2-1,...,d_n-1)\ if\ d_1 = max\{d_1,d_2,...,d_n\}
+\end{equation} 
+
+\subsection{Algorithm Description}
+算法首先将S中的自然数排序，每次将最大度数的自然数取出S集合，并且其他在S中的度数减1，直到S中出现负数时，说明S中的序列不能构成一张无环图，当S中所有节点值均为0时，则说明其能构成一张无环图。其中在初始条件时存在一定的限制条件，当度数和为奇数时，一定不是无环图；当仅有一个节点是，其确定是一张图；因最大度数必不超过n-1，当最大节点度数大于等于节点总个数时，其不是一张无环图。
+
+\begin{algorithm}[htbp]  
+  \caption{Judge whether there exists an undirected graph without circle}  
+  \begin{algorithmic}[1] 
+    \Function {SearchAcyclicGraph}{$S(d_1,d_2,...,d_n)$} 
+	\If {sum(S) is odd}
+	\State return 0;
+	\EndIf
+	\If {len(S) == 1}
+	\State $return\ 1;$ 
+	\EndIf
+	\State $sort\ S(d_1,d_2,...,d_n);$
+	\If {$len(S) \leq d_1$}
+	\State return 0;
+	\EndIf
+	\For {$i\ from\ 1\ to\ n$}
+	\State $S = S - d_i;$
+	\For {$j\ from\ i+1\ to n$}
+	\State $d_j = d_j -1;$
+	\EndFor
+	\If{$all\ d_i\ in\ S\ are\ 0$}
+	\State return 1;
+	\EndIf
+	\If{$exist\ d_i\ in\ S\ < 0$}
+	\State return 0;
+	\EndIf
+	\EndFor
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。\\
+
+对于n=1时，因一个节点时，其自成一张图，因此算法返回1。\\
+
+当n=k时，因最大度数必不超过n-1，当最大节点度数大于等于节点总个数时，其不是一张无环图。所以余下的序列组合最大值不超过n-1，共有n个节点，因此算法每去除一个节点所有节点减1，必能使所有节点达到0。若途中已达到负数则退出返回不能构成一张无环图。\\
+
+综上所述，该算法是正确的。
+
+\subsection{Complexity Analysis}
+度数求和时的时间复杂度为O(n),排序算法时，最快排序时间复杂度为O(nlogn)，每个度数减1时时间复杂度为O（$n^2$），判断是否存在负数或度数全0时时间复杂度为O(n)，因此算法的时间复杂度为：
+\begin{equation}
+T(n) = O(n^2)
+\end{equation}
+
+\newpage
+\section{Problem Twe}
+
+There are n distinct jobs, labeled $J_1, J_2,..., J_n$, which can be performed completely independently of one another. Each job consists of two stages: first it needs to be preprocessed on the supercomputer, and then it needs to be finished on one of the PCs. Let's say that job $J_i$ needs $p_i$ seconds of time on the supercomputer, followed by $f_i$ seconds of time on a PC. Since there are at least n PCs available on the premises, the finishing of the jobs can be performed on PCs at the same time. However, the supercomputer can only work on a single job a time without any interruption. For every job, as soon as the preprocessing is done on the supercomputer, it can be handed off to a PC for finishing.
+
+Let's say that a schedule is an ordering of the jobs for the supercomputer, and the completion time of the schedule is the earlist time at which all jobs have finished processing on the PCs. Give a polynomial-time algorithm that finds a schedule with as small a completion time as possible.
+
+
+\subsection{Optimal Substructure and greedy-choice property}
+因为作业最早结束时间是在PC端和超级计算机共有的时间，并且PC共有n台且能同时处理，因此选择在PC端时间长的部分优先处理，这样多个PC机可以并行执行多个较长的作业，不占用多余的时间，直到算法结束。因此贪心选择如公式（4）所示：
+\begin{equation}
+choose\ max\{f_1,f_2,...,f_n\}
+\end{equation}
+
+最优子结构为公式（5）所示：
+\begin{equation}
+OPT(p_1,p_2,...p_n,f_1,f_2,...,f_n) = OPT(p_2,...p_n,f_2,...,f_n)\ if\ p_1 = max\{p_1,p_2,...,p_n\}
+\end{equation} 
+
+\subsection{Algorithm Description}
+算法首先将作业在PC的执行时间$f_i$由大到小排序，每次寻找最长时间的$f_i$，同时找到该作业对应在超级计算机上执行的时间p，执行完p时间后将该作业较由PC处理。
+
+
+\begin{algorithm}[htbp]  
+  \caption{Find a schedule with as small a completion time as possible}  
+  \begin{algorithmic}[1] 
+    \Function {SmallestTimeSchedule}{$J(j_1,j_2,...,j_n),P(p_1,p_2,...,p_n), F(f_1,f_2,...,f_n)$} 
+	\State $sort\ F(f_1,f_2,...,f_n);$
+	\For {$i\ from\ 1\ to\ n$}
+	\State $F = F - f_i;$
+	\State find p correspond to $f_i$;
+	\State $P = P - p;$
+	\State wait for p time and PC processes j corresponding to $f_i$;
+	\EndFor
+	\State return 0;
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。\\
+
+当n=1时，只有一个作业，选取该作业即可完成调度工作。
+
+当n=k时，由于PC能同时处理，让时间较长的f尽早挂起有助于减少PC端的等待时间，由于超级计算机每次只能执行一个作业，所以p的总时间一定，但较大的f尽早挂起，假设$f_{max}> \sum_{i=1}^np_i$,使得总时间为$p_1\ast2 + f_{max} - \sum_{i=1}^np_i$，若将$f_{max}$放在第k个执行,则存在可能性，使得在执行完所有p任务时时间为$\sum_{i=1}^kp_i + f_{max} - \sum_{i=k+1}^np_i$。显然前者时间更少。\\
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+排序算法的时间复杂度为O(nlogn)，寻找对应的p,f,j时的时间复杂度为O(n)。因此算法的时间复杂度为:
+\begin{equation}
+T(n) = O(nlogn)
+\end{equation}
+
+
+\newpage
+\section{Problem Three}
+Given two strings s and t, check if s is subsequence of t? A subsequence of a string is a new string which is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (ie, "ace" is a subsequence of "abcde" while "aec" is not).
+
+
+\subsection{Optimal Substructure and greedy-choice property}
+由于需要确定字符串的顺序不变，则每次选择s中的第一个字符与t从头开始匹配，匹配到后将$s_1$抛弃，再选择剩余s中的第一个字符，与t中接下来的部分继续匹配。因此贪心选择如公式(7)所示：
+\begin{equation}
+choose\ first\ s_1\ in\ S(s_1,s_2,...,s_n)\ and\ if\ t_k\ matched,\ choose\ T(t_{k+1},...,t_n)
+\end{equation}
+
+最优子结构为公式（8）所示：
+\begin{equation}
+OPT(s_1,s_2,...s_n,t_1,t_2,...,t_m) = OPT(s_2,...s_n,t_{k+1},...,t_m)\ if\ s_1 = t_k
+\end{equation} 
+ 
+
+\subsection{Algorithm Description}
+算法每次选取s中的数来对t查找，若找到对应的字符，则下一个s会在t中接下来的位置继续查找,若任一个s在t中未找到则返回0，若都找到了，则返回1。
+
+
+\begin{algorithm}[htbp]  
+  \caption{Check if s is subsequence of t}  
+  \begin{algorithmic}[1] 
+    \Function {CheckSubsequence}{$S(s_1,s_2,...,s_n),T(t_1,t_2,...,t_m)$} 
+	\State temp = 1；
+	\For {$i\ from\ 1\ to\ n$}
+	\For{j from temp to m}
+	\If {$s_i == t_j$}
+	\State temp = j++;
+	\State break;
+	\EndIf
+	\State return 0;
+	\EndFor
+	\EndFor
+	\State return 1;
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。\\
+
+当s和t只有1个字符时，算法显然是成立的。\\
+
+当s和t分别有n和m个字符时，由于s是按顺序执行的，且t在执行过程中只遍历了一遍，所以必定找到t中的所有字符与s进行比较，即寻找t的子集过程。\\
+
+综上所述，算法是正确的。
+
+
+\subsection{Complexity Analysis}
+由于算法保证对t中的字符进行了遍历，所以时间复杂度与t的长度有关，因此算法的时间复杂度为：
+\begin{equation}
+T(n)= O(m)
+\end{equation} 
+
+
+\newpage
+\section{Problem Four}
+Given a rope whose length is n, please cut the rope to m parts to get the maximum product of the length of each part $\prod_{l_1+l_2+..+l_m=n} l_1 \ast l_2 \ast ... \ast l_m$. For example, if a rope with length 8, when we cut it to 2, 3, 3, we can get the maximum product 18.
+
+
+\subsection{Optimal Substructure and greedy-choice property}
+因为绳子的总长不变，要得到最大的乘积，只需要让切分的绳子尽可能相等，因此贪心选择如公式（10）所示：
+\begin{equation}
+choose\ l_i\ is\ nearly\ equal\ in\ L(l_1,l_2,...,l_n)
+\end{equation} 
+
+最优子结构为公式（11）所示：
+\begin{equation}
+OPT(l_1,l_2,...,l_n) = OPT(l_i,l_i,...,l_i)\ if\ l_i\ is\ nearly\ equal\ in\  L(l_1,l_2,...,l_n)
+\end{equation} 
+
+
+\subsection{Algorithm Description}
+算法需要判断n/m的小数部分是大于0.5还是小于0.5，若大于0.5，则说明存在m-1个n/m上取整的数和1个n/m下取整的数其总和为n，若小于0.5，则说明存在m-1个n/m下取整的数和1个n/m上取整的数其总和为n。
+
+
+\begin{algorithm}[htbp]  
+  \caption{Get the maximum product of the length}  
+  \begin{algorithmic}[1] 
+    \Function {MaximumProduct}{$n,m$} 
+	\If {m==1}
+	\State return n;
+	\EndIf
+	\If{$ n/m - \lfloor n/m\rfloor > 0.5$}
+	\State $product = {\lceil n/m\rceil}^{m-1}\ast \lfloor n/m\rfloor$;
+	\Else
+	\State $product = {\lfloor n/m\rfloor}^{m-1}\ast \lceil n/m\rceil$;
+	\EndIf
+	\State return product;
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。\\
+
+当m=1时，其乘积就为长度n本身。\\
+
+当m=k时，n/m的小数部分是大于0.5时，必存在k-1个n/k上取整的数和1个n/k下取整的数其总和为n，因为k-1个上取整的数比m/n多出的部分加和会由最后一个下取整的数填补使总和仍为n，因此即找到了和为n的最约等的一串数字，其乘积必为最大乘积。\\
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+因为算法只有计算步骤而与长度n和个数m无关，因此算法的时间复杂度为：
+
+\begin{equation}
+T(n) = O(1)
+\end{equation} 
+
+
+\end{CJK*}
+\end{document}

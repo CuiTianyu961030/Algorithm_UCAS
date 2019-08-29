@@ -1,0 +1,609 @@
+\documentclass{article}
+
+%设置页边距
+\usepackage{float}
+\usepackage{geometry}
+%\usepackage{fancybox}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+
+\geometry{left=2cm,right=2cm,top=2cm,bottom=2cm}
+
+%插入代码
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    numbers=left,
+    numberstyle=\scriptsize,
+    keywordstyle=\color{red!80},
+    commentstyle=\color{red!50!green!50!blue!50}\bf,
+    frame=trbl,
+    rulesepcolor=\color{red!20!green!20!blue!20},
+    backgroundcolor=\color[RGB]{245,245,244},
+    escapeinside=``,
+    showstringspaces=false,
+    xleftmargin=5em,xrightmargin=5em,
+    aboveskip=1em,
+    framexleftmargin=2em,
+}
+%\begin{lstlisting}[language=C++]
+%\end{lstlisting}
+
+%设置中文
+\usepackage{ctex}
+\usepackage{algorithm}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm  
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+
+\title{091M4041H - Algorithm Design and Analysis\\ [2ex] \begin{large} Assignment 2 \end{large}}
+%\title{Assignment 1}
+\author{崔天宇\quad201818018670007}
+\date{October 22, 2018}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Money robbing}
+
+A robber is planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+1.Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
+
+2.What if all houses are arranged in a circle?
+
+\subsection{Optimal Substructure and DP Equation}
+
+设\{1,2,...,n\}为这条这条街上的n个房子的序号，$v_i$表示第i个房子所拥有的金额。
+\\
+
+利用DP求解这一问题时，我们可以把问题看成两部分，即每一次是否选择这条街上的最后一个房子n抢劫。如果不抢劫房子n，那么问题改变为在房子\{1,2,...,n-1\}中选择房子抢劫；如果抢劫房子n，获得房子n的金额$v_n$，根据不能抢劫相邻房子的规则，房子n-1不能被抢劫，于是接下来只能从房子\{1,2,...,n-2\}中选择。每次寻找两个子问题中最大收益的子问题，直到所有的房子都已经或不能被抢劫，DP Equation描述如公式(1)所示。
+\\
+
+如果这条街是一个环，同样首先考虑将问题看成两部分，只是对于第一步房子n的选择有所不同:如果不抢劫房子n，继续在\{1,2,...,n-1\}中选择；如果抢劫房子n，获得房子n的金额$v_n$，因为房子1和n-1与n相邻所以排除出选择列表，剩下子问题为在\{2,...,n-2\}中选择。在选完房子n后，将最大收益的子问题按照公式(1)继续迭代寻找，同样每次寻找两个子问题中最大收益的子问题，直到所有的房子都已经或不能被抢劫，环形街的DP Equation描述如公式(2)所示。
+
+
+
+\begin{equation} 
+OPT(\{1,2,...,n\})=max\left\{
+\begin{array}{lcr}
+OPT(\{1,2,...,n-1\})       &      & don't\ choose\ n\\
+OPT(\{1,2,...,n-2\})+ v_n     &      & choose\ n\\
+
+\end{array} \right.
+\end{equation} 
+\\
+
+\begin{equation} 
+OPT(\{1,2,...,n\})=max\left\{
+\begin{array}{lcr}
+OPT(\{1,2,...,n-1\})       &      & don't\ choose\ n\\
+OPT(\{2,...,n-2\})+ v_n     &      & choose\ n\\
+
+\end{array} \right.
+\end{equation}
+ 
+\begin{center}
+then substitute $OPT(\{1,2,...,n-1\})$ or $OPT(\{2,...,n-2\})$ to Equation (1)
+\end{center}
+
+\subsection{Algorithm Description}
+
+设$OPT(1,n)$表示从1到n的房子中进行选择所获得的最大收益，首先初始化$OPT(1,0)$,$OPT(1,-1)$,$OPT(2,1)$,         \ $OPT(2,0)$,$OPT(2,-1)$的值为0，表示无房子可选择时的收益为0。当所有房子在一条直线的街上时，i从1到n遍历，对于第i个房子判断是否选择第i个，寻找两个子问题中较大收益的金额作为当前$OPT(1,i)$的最优解，直到解得$OPT(1,n)$即为最优解。
+\\
+
+若房子形成一个环，则需要计算$OPT(2,i)$，用以判断环形街上的$OPT(1,n)$是否选择最后一个房子n，选择$OPT(1,n-1)$与$v_n + OPT(2,n-1)$两个子问题中收益最大的子问题，求得$OPT(1,n)$即为环形街上收益最大解。
+
+\begin{algorithm}[htbp]  
+  \caption{Obtain the maximum money from the houses on the street}  
+  \begin{algorithmic}[1] 
+    \Function {MoneyRobbing}{$n$} 
+	\State $OPT(1,0) = OPT(1,-1) = OPT(2,1) = OPT(2,0) = OPT(2,-1) = 0;$
+	\For {$i = 1\ to\ n$}
+	\State $OPT(1,i) = max\{OPT(1,i-1), v_i + OPT(1,i-2)\};$
+	\EndFor
+	\If {the street is a circle}
+	\For {$i = 2\ to\ n-2$}
+	\State $OPT(2,i) = max\{OPT(2,i-1), v_i + OPT(2,i-2)\};$
+	\EndFor
+	\State $OPT(1,n) = max\{OPT(1,n-1), v_n + OPT(2,n-2)\};$
+	\EndIf
+    \EndFunction 
+  \end{algorithmic}  
+\end{algorithm} 
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。
+\\
+
+对于n=1，可得到:
+\begin{equation}
+OPT(1,1)=max\{OPT(1,0), v_1 + OPT(1,-1)\}=max\{0,v_1\}=v_1
+\end{equation}
+
+假设n=k-1和k-2，可得到
+\begin{equation}
+OPT(1,k-1)=max\{OPT(1,k-2), v_{k-1} + OPT(1, k-3)\}
+\end{equation}
+
+\begin{center}
+$OPT(1,k-2)=max\{OPT(1,k-3), v_{k-2} + OPT(1, k-4)\}$
+\end{center}
+
+对于n=k,则有
+\begin{equation}
+OPT(1,k)=max\{OPT(1,k-1), v_{k} + OPT(1, k-2)\}
+\end{equation}
+
+\begin{center}
+$=max\{OPT(1,k-2), v_{k-1} + OPT(1, k-3)\}+max\{OPT(1,k-3), v_{k-2} + OPT(1, k-4)\}$
+\end{center}
+
+因此，当街是一条直线时，算法是正确的。
+\\
+
+当街是一个环时，对于n=1，可得到:
+\begin{equation}
+OPT(1,1)_{circle}=max\{OPT(1,0), v_1 + OPT(2,-1)\}=max\{0,v_1\}=v_1
+\end{equation}
+
+假设n=k-1和k-2，可得到
+\begin{equation}
+OPT(1,k-1)_{circle}=max\{OPT(1,k-2), v_{k-1} + OPT(2, k-3)\}
+\end{equation}
+\begin{center}
+$OPT(1,k-1)_{line}=max\{OPT(1,k-2), v_{k-1} + OPT(1, k-3)\}$
+\end{center}
+\begin{center}
+$OPT(2,k-2)=max\{OPT(2,k-3), v_{k-2} + OPT(2, k-4)\}$
+\end{center}
+
+对于n=k,则有
+\begin{equation}
+OPT(1,k)_{circle}=max\{OPT(1,k-1)_{line}, v_{k} + OPT(2, k-2)\}
+\end{equation}
+
+\begin{center}
+$=max\{OPT(1,k-2), v_{k-1} + OPT(1, k-3)\}+max\{OPT(2,k-3), v_{k-2} + OPT(2, k-4)\}$
+\end{center}
+
+因此，当街是一个环时，算法是正确的。
+\\
+
+综上所述，算法是正确的。
+
+
+\subsection{Complexity Analysis}
+
+因为问题中房子个数为(1,n)，OPT数组中最优解的个数为n，每次分解成两个子问题，因此OPT数组需遍历两遍。因此算法的时间复杂度为:
+\begin{equation}
+T(n) = 2*n = O(n)
+\end{equation}
+
+\newpage
+\section{Node selection}
+
+You are given a binary tree, and each node in the tree has a positive integer weight. If you select a node, then its children and parent nodes cannot be selected. Your task is to find a set of nodes, which has the maximum sum of weight.
+
+\subsection{Optimal Substructure and DP Equation}
+
+设OPT(root)表示以root为根的二叉树的最大节点和，根据不能选择相邻节点的规则，可以把问题看成两个子问题，即选择root和不选root两个部分。如果选择root节点，那么接下来只能从以$root\rightarrow left\rightarrow left,root\rightarrow left \rightarrow right,root\rightarrow right\rightarrow left,root\rightarrow right\rightarrow right$为根的子树中选择节点；如果不选择root节点，那么接下来可以从$root\rightarrow left, root\rightarrow right$为根的子树中选择节点。DP Equation的描述如公式(10)所示。
+
+\begin{equation} 
+OPT(root)=max\left\{
+\begin{array}{lcr}
+OPT(root\rightarrow left\rightarrow left) +OPT(root\rightarrow left \rightarrow right)       &      & \\
++OPT(root\rightarrow right\rightarrow left)+OPT(root\rightarrow right\rightarrow right)+v_{root}   &   &  choose\ root\\
+OPT(root\rightarrow left)+OPT(root\rightarrow right)     &      & don't\ choose\ root\\
+
+\end{array} \right.
+\end{equation} 
+
+
+\subsection{Algorithm Description}
+
+从二叉树的叶子节点出发，初始化当节点为空时OPT(NULL)=0，计算以当前节点为根的树的最大节点权之和OPT(node)，通过之前的描述将问题分成两部分，选择当前节点时计算当前节点权值加上其所有孙子子树的OPT之和，不选择当前节点时计算当前节点的左右子树的OPT之和，判断二者较大者将其赋值给当前节点的OPT值。选完所有当前节点后，更新当前节点集为所有当前节点的父节点，以此循坏，直到所有当前节点的父节点全为空时，最后回溯寻找OPT最优解的节点选择加入选择集。
+
+\begin{algorithm}[htbp] 
+  \caption{Find the nodes with the maximum sum of weight in a binary tree}  
+  \begin{algorithmic}[1] 
+    \Function {NodeSelection}{$BTree\ root$}
+	\State $set_{selection} = \{\};$
+	\State $set_{current} = \{all\ leaf\ nodes\ in\ the\ binary\ tree\};$
+	\State $OPT(NULL) = 0;$
+%	\For {$every\ node\ in\ set_{current}$}
+%	\State $OPT(node) = v_{node};$
+%	\EndFor
+	
+	\For {$every\ node\ in\ set_{current}$}
+	\State $substruct_1 = OPT(node\rightarrow left\rightarrow left) + OPT(node\rightarrow left \rightarrow right)+OPT(node\rightarrow right\rightarrow left)+OPT(node\rightarrow right\rightarrow right)+v_{node};$
+	\State $substruct_2 = OPT(node\rightarrow left)+OPT(node\rightarrow right);$
+	\State {$OPT(node) = max\{substruct_1, substruct_2\}$};
+%	\If {$OPT(node) == substruct_1$}
+%	\State $Push\ node\ to\ set_{selection}$
+%	\EndIf
+	\State {$Pop\ node\ from\ set_{current}$};
+	\State {$Push\ node\rightarrow parent\ to\ set_{current}$};
+%	\If {$every\ node\ in\ set_{current}\ is\ NULL$}
+%	\State return $set_{selection}$;
+%	\EndIf
+	\EndFor
+	\State $Research(node)$
+	\EndFunction  
+  \end{algorithmic}  
+\end{algorithm} 
+
+\begin{algorithm}[htbp] 
+  \caption{Research the selected nodes}  
+  \begin{algorithmic}[1] 
+	\Function {Research}{node}
+	\State $substruct_1 = OPT(node\rightarrow left\rightarrow left) + OPT(node\rightarrow left \rightarrow right)+OPT(node\rightarrow right\rightarrow left)+OPT(node\rightarrow right\rightarrow right)+v_{node};$
+	\If {$OPT(node) == substruct_1$}
+	\State $Push\ node\ to\ set_{selection}$;
+	\State $Research(node\rightarrow left\rightarrow left)$;
+	\State $Research(node\rightarrow left \rightarrow right)$;
+	\State $Research(node\rightarrow right\rightarrow left)$;
+	\State $Research(node\rightarrow right\rightarrow right)$;
+	\Else
+	\State $Research(node\rightarrow left)$;
+	\State $Research(node\rightarrow left)$;
+	\EndIf
+	\EndFunction  
+  \end{algorithmic}  
+\end{algorithm} 
+
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。
+\\
+
+当仅有一个节点输入时:
+
+\begin{equation}
+OPT(node)=max\{ OPT(node\rightarrow left\rightarrow left) +OPT(node\rightarrow left \rightarrow right)
+\end{equation}
+
+\begin{center}
+$+OPT(node\rightarrow right\rightarrow left)+OPT(node\rightarrow right\rightarrow right)+v_{node}, OPT(node\rightarrow left)+OPT(node\rightarrow right)\}=max\{v_{node},0\}=v_{node}$
+\end{center}
+
+
+假设二叉树的$root\rightarrow left$,$root\rightarrow right$,$root\rightarrow left\rightarrow left,root\rightarrow left \rightarrow right,root\rightarrow right\rightarrow left,root\rightarrow right\rightarrow right$节点已知，则:
+\begin{equation}
+OPT(root\rightarrow left)=max\{ OPT(root\rightarrow left\rightarrow left\rightarrow left) +OPT(root\rightarrow left\rightarrow left \rightarrow right)
+\end{equation}
+
+\begin{center}
+$+OPT(root\rightarrow left\rightarrow right\rightarrow left)+OPT(root\rightarrow left\rightarrow right\rightarrow right)+v_{root\rightarrow left}, OPT(root\rightarrow left\rightarrow left)+OPT(root\rightarrow left\rightarrow right)\}$
+\end{center}
+
+\begin{equation}
+OPT(root\rightarrow right)=max\{ OPT(root\rightarrow right\rightarrow left\rightarrow left) +OPT(root\rightarrow right\rightarrow left \rightarrow right)
+\end{equation}
+
+\begin{center}
+$+OPT(root\rightarrow right\rightarrow right\rightarrow left)+OPT(root\rightarrow right\rightarrow right\rightarrow right)+v_{root\rightarrow right}, OPT(root\rightarrow right\rightarrow left)+OPT(root\rightarrow right\rightarrow right)\}$
+\end{center}
+
+
+同理可得$OPT(root\rightarrow left\rightarrow left), OPT(root\rightarrow left \rightarrow right), OPT(root\rightarrow right\rightarrow left), OPT(root\rightarrow right\rightarrow right)$
+\\
+
+则计算以root为根的二叉树的OPT值为:
+
+\begin{equation}
+OPT(root)=max\{OPT(root\rightarrow left\rightarrow left) +OPT(root\rightarrow left \rightarrow right)
+\end{equation}
+
+\begin{center}
+$+OPT(root\rightarrow right\rightarrow left)+OPT(root\rightarrow right\rightarrow right)+v_{root}, OPT(root\rightarrow left)+OPT(root\rightarrow right)\}$
+\end{center} 
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+
+假设二叉树的节点个数为n，OPT数组中最优解的个数为n，每次分解成两个子问题，第一个子问题需要查找4个孙子节点的OPT，第二个子问题需要查找2个子节点的OPT，因此每次遍历6个节点，算法的时间复杂度为:
+\begin{equation}
+T(n)=(4+2)*n=O(n)
+\end{equation}
+
+\newpage
+\section{Decoding}
+
+A message containing letters from A-Z is being encoded to numbers using the following mapping:
+
+\begin{center}
+A : 1
+
+B : 2 
+
+... 
+
+Z : 26
+\end{center}
+
+Given an encoded message containing digits, determine the total number of ways to decode it.
+
+For example, given encoded message “12”, it could be decoded as “AB” (1 2) or “L” (12). The number of ways decoding “12” is 2.
+
+\subsection{Optimal Substructure and DP Equation}
+
+设$Num(\{e_1,e_2,...,e_n\})$为一串编码后的数字的解码方式总个数，编码数字的个数为n，利用DP方法，考虑每增加一个数字后，最后一个数字是否可以和前一个数字组成一对数字进行编码，因此问题可以分成两个子问题:当前一个数字$e_{n-1}\leq2$时，则可以和最后一个数字组成一对进行编码，则其总的解码方式为不加这一对数字的解码和$Num(\{e_1,e_2,...,e_{n-2}\})$与加上第n-1个数之后的解码和$Num(\{e_1,e_2,...,e_{n-1}\})$;当前一个数字$e_{n-1}>2$时，则说明其不能与数字$e_n$组成一对进行编码，则其总的解码方式即为前n-1个数的解码方式总和。此问题的DP Equation如公式(16)所示。
+
+\begin{equation} 
+Num(\{e_1,e_2,...,e_n\})=\left\{
+\begin{array}{lcr}
+Num(\{e_1,e_2,...,e_{n-2}\}) + Num(\{e_1,e_2,...,e_{n-1}\})      &      & 0< e_{n-1} \leq 2\\
+Num(\{e_1,e_2,...,e_{n-1}\})     &      & e_{n-1} > 2\\
+
+\end{array} \right.
+\end{equation} 
+
+\subsection{Algorithm Description}
+首先初始化1个数时，解码方式为1，当解码多个数字时，将解码总数分解成两部分:如果前一个数小于等于2，则包含前一个数和不包含前一个数的编码方式之和即为加上最后一个数的总的编码方式;如果前一个数大于2，则最后一个数不能与前一个数组成一对，其编码方式之和即为前i-1个数的编码总和。循环i直到n，求得$Num(\{e_1,e_2,...,e_i\})$。
+
+\begin{algorithm}[htbp]  
+  \caption{Determine the total number of ways to decode an encoded digits}  
+  \begin{algorithmic}[1] 
+   \Function {Decoding}{$\{e_1,e_2,...,e_n\}, n$} 	
+	\State $Num(\{e_1\})=1$;
+	\For {i\ from\ 2\ to\ n}
+	\If {$i == 2$}
+	\State $Num(\{e_1,e_2,...,e_{i-2}\})=0$
+	\EndIf
+	\If {$e_{i-1} \leq 2$}
+	\State $Num(\{e_1,e_2,...,e_i\})=Num(\{e_1,e_2,...,e_{i-2}\}) + Num(\{e_1,e_2,...,e_{i-1}\});$
+	\Else 
+	\State $Num(\{e_1,e_2,...,e_i\}) = Num(\{e_1,e_2,...,e_{i-1}\})$;
+	\EndIf
+     \EndFor
+    \EndFunction  
+  \end{algorithmic}  
+\end{algorithm} 
+
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。
+\\
+
+当n=1时，则有:
+\begin{equation} 
+Num(\{e_1\})=1
+\end{equation} 
+
+假设n=k-1和k-2时，可得:
+当$e_{k-2} \leq 2$时，
+\begin{equation}
+Num(\{e_1,e_2,...e_{k-1}\})=Num(\{e_1,e_2,...,e_{k-3}\}) + Num(\{e_1,e_2,...,e_{k-2}\})
+\end{equation}
+
+当$e_{k-2} > 2$时，
+\begin{equation}
+Num(\{e_1,e_2,...,e_{k-1}\}) = Num(\{e_1,e_2,...,e_{k-2}\})
+\end{equation}
+
+同理可得到$Num(\{e_1,e_2,...e_{k-2}\})$的值。
+\\
+
+当n=k时，则有:
+当$e_{k-1} \leq 2$时，
+\begin{equation}
+Num(\{e_1,e_2,...e_k\})=Num(\{e_1,e_2,...,e_{k-2}\}) + Num(\{e_1,e_2,...,e_{k-1}\})
+\end{equation}
+
+当$e_{k-1} > 2$时，
+\begin{equation}
+Num(\{e_1,e_2,...,e_k\}) = Num(\{e_1,e_2,...,e_{k-1}\})
+\end{equation}
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+
+设编码数字共n个，因此Num数组共n个元素存放$Num(\{e_1,e_2,...,e_n\})$的值，每次求解$Num(\{e_1,e_2,...,e_n\})$时，每次将问题分成两个子问题，第一个子问题需要寻找前两个Num值，第二个子问题则需要寻找前一个Num值。每次循环只挑选一个子问题，因此算法的时间复杂度为:
+\begin{equation}
+T(n) \leq 2*n = O(n)
+\end{equation}
+
+\newpage
+\section{Longest Consecutive Subsequence}
+You are given a sequence of integers L and an integer k, your task is to find the longest consecutive subsequence the sum of which is the multiple of k.
+
+
+
+\subsection{Optimal Substructure and DP Equation}
+
+首先问题可以看成两部分，如果前n项数字和$S_n$模k的余数为0，则说明前n项即是连续的子串;如果前n项和模k的余数不为0，取每一个余数第一次出现在L中的位置$N_1[S_n\%k]$，考虑同余定理，如果前n项和模k的余数与第一次余数相同，则余数第一次出现的位置到n之间的和模k的余数一定为0，则为k的倍数，每次取每一个余数不加第n项前的子串长度$N_{n-1}[S_n\%k]$与加上第n项后第n项到第1次出现该余数位置之间的长度$n-N_1[S_n\%k]$的较大者，最终统计所有小于k的余数下长度的最大值即为解。问题的DP Equation如下所示:
+
+\begin{equation} 
+N_{\{0,1,...,n\}}[\{0,1,...,k-1\}]=max\left\{
+\begin{array}{lcr}
+n      &      &  S_n\%k=0\\
+max\{N_{n-1}[S_n\%k], n-N_1[S_n\%k]\}    &      & S_n\%k\neq0\\
+
+\end{array} \right.
+\end{equation} 
+
+\begin{equation} 
+S_n = L_1+ L_2+...+L_n
+\end{equation} 
+
+\subsection{Algorithm Description}
+
+首先DP算法维护两个数字$N_1$和$N_i$，$N_1$表示余数第一次出现时的位置，$N_i$表示该余数下当前子串最大长度。首先为$N_1$初始化赋值为0，然后从1到n循环，每加上一个数字，计算其模k的余数是否为第一次出现，第一次出现则更新$N_1$否则更新最大长度数组$N_i$，更新方式依照问题分成两部分:当所有和是k的倍数是，余数0的最大长度即为i，记录数组长度;当模k为其他余数时，将当前长度减去第一次余数出现时的长度，并与当前余数下的原N作比较，较大者更新当前N，记录其数组位置。最后统计所有余数下的长度的最大值，返回其数组位置。本题算法在下页展示。
+
+
+
+\subsection{Proof of Algorithm Correctness}
+当n=1时，则有
+\\
+
+\begin{center} 
+$N_1=0 (S_n\%k \neq0$)
+
+$N_1=1 (S_n\%k ==0$)
+\end{center} 
+
+假设n=k-1，可得
+
+\begin{center} 
+$N_{k-1}=max\{N_{k-1}[0], N_{k-1}[1],...N_{k-1}[k'-1]\}$
+\end{center} 
+
+当n=k时，则
+
+\begin{center} 
+$N_{k}=max\{N_{k}[0], N_{k}[1],...N_{k}[k'-1]\}$
+\end{center} 
+
+而对于每一个$N_{k}[i](i<k'-1)$(其中$k'$为倍数)，每次由$max\{N_{k-1}[i],k-N_1[i]\}$可得，又其中$N_1[i]$已知，$N_{k-1}[i]$由n=k-1假设可得，则$N_{k}$可计算。
+\\
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+算法分成两个子问题，每次寻找两个数组即第一次余数出现位置$N_1$和前一次余数下的最大长度记录$N_{i-1}$，因此算法的时间复杂度为
+
+\begin{equation} 
+T(n)=2*n=O(n)
+\end{equation} 
+
+\quad\\\\
+
+\begin{algorithm}[htbp]  
+  \caption{Find the longest consecutive subsequence the sum of which is the multiple of k.}  
+  \begin{algorithmic}[1] 
+   \Function {LongestSubsequence}{$L({L_1,L_2,...,L_n}),n,k$} 	
+	\For {i\ from\ 0\ to\ k-1}
+	\State $N_1[i]=0$;
+     \EndFor
+	\If{$n==1$}
+	\If{$L_1\%k == 0$}
+	\State return 1;
+	\EndIf
+	\State return 0;
+	\EndIf
+%	\State $S_n =L_1$;
+%	\If{$S_n\%k==0$}
+%	\State $N_1[S_n\%k]=1$;
+%	\Else
+%	\State$N_1[S_n\%k]=0$;
+%	\EndIf
+	\For{$i\ from\ 1\ to\ n$}
+	\State$S_n = S_n + L_i$;
+	\If {$N_1[S_n\%k] ==0$}
+	\State $N_1[S_n\%k] ==i$;
+	\Else
+	\If{$S_n\%k==0$}
+	\State$N_i[0]==i$;
+	\Else
+	\State$N_i[S_n\%k]==max\{N_{i-1}[S_n\%k],i-N_1[Sn\%k]\}$;
+	\EndIf
+	\EndIf
+	\EndFor
+	\State$return\ max\{N_n[0], N_n[1],...N_n[k-1]\}$;
+    \EndFunction  
+  \end{algorithmic}  
+\end{algorithm} 
+
+\newpage
+\section{Maximum profit of transactions}
+You have an array for which the i-th element is the price of a given stock on day i.
+
+Design an algorithm and implement it to find the maximum profit. You may complete at most two transactions.
+
+Note: You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again), and one transaction includes buying and selling.
+
+
+
+\subsection{Optimal Substructure and DP Equation}
+
+设$buy_1[n],buy_2[n],sell_1[n],sell_2[n]$分别为第n天第一次买入、第n天第一次卖出、第n天第二次买入、第n天第二次卖出的收益，$price[n]$表示第n天的股票交易额，为使最终$sell_2[n]$的收益最大，此问题的DP Equation如下所示:
+
+\begin{center} 
+$sell_2[n]=max\{sell_2[n-1], price[n]+buy_2[n-1]\}$
+
+$buy_2[n]=max\{buy_2[n-1], sell_1[n-1]-price[n]\}$
+
+$sell_1[n]=max\{sell_1[n-1], price[n]+buy_1[n-1]\}$
+
+$buy_1[n]=max\{buy_1[n-1], -price[n]\}$
+\end{center} 
+
+\subsection{Algorithm Description}
+算法首先初始化$buy_1[1],buy_2[1],sell_1[1],sell_2[1]$的值，循环从2到n开始，每次将前i-1天的收益与与第i天的收益相比取最大者，直到循环结束到第n天，返回前n天的$sell_2[n]$即为两次交易的最大收益。
+
+\begin{algorithm}[htbp]   
+  \caption{Find the maximum profit transaction way.}  
+  \begin{algorithmic}[1] 
+   \Function {MaximumProfit}{$price(1,2,...,n),n$} 	
+	\State $buy_1[1]=buy_2[1]=-price[1];$
+	\State $ sell_1[1]=sell_2[1]=0$;
+	\For {i\ from\ 2\ to\ n}
+	\State $sell_2[i]=max\{sell_2[i-1], price[i]+buy_2[i-1]\}$
+	\State $buy_2[i]=max\{buy_2[i-1], sell_1[i-1]-price[i]\}$
+	\State $sell_1[i]=max\{sell_1[i-1], price[i]+buy_1[i-1]\}$
+	\State $buy_1[i]=max\{buy_1[i-1], -price[i]\}$
+     \EndFor
+	\State $return\ sell_2[n]$;
+    \EndFunction  
+  \end{algorithmic}  
+\end{algorithm} 
+
+
+\subsection{Proof of Algorithm Correctness}
+采用数学归纳法证明。
+\\
+
+当n=1时，则有
+
+\begin{center} 
+$sell_2[1]=0$
+\end{center} 
+
+假设n=k-1，则可得到
+
+\begin{center} 
+$sell_2[k-1]=max\{sell_2[k-2], price[k-1]+buy_2[k-2]\}$
+
+$buy_2[k-1]=max\{buy_2[k-2], sell_1[k-2]-price[k-1]\}$
+
+$sell_1[k-1]=max\{sell_1[k-2], price[k-1]+buy_1[k-2]\}$
+
+$buy_1[k-1]=max\{buy_1[k-2], -price[k-1]\}$
+\end{center} 
+
+当n=k时，则
+
+\begin{center} 
+$sell_2[k]=max\{sell_2[k-1], price[k]+buy_2[k-1]\}$
+
+$buy_2[k]=max\{buy_2[k-1], sell_1[k-1]-price[k]\}$
+
+$sell_1[k]=max\{sell_1[k-1], price[k]+buy_1[k-1]\}$
+
+$buy_1[k]=max\{buy_1[k-1], -price[k]\}$
+\end{center} 
+
+又price[k]及price[k-1]均已知，则$sell_2[k]$可得。
+\\
+
+综上所述，算法是正确的。
+
+\subsection{Complexity Analysis}
+算法中每个数组长度为n，算法使i从2循环到n，每次查找$buy_1,buy_2,sell_1,,sell_2,price$五个数组值。因此，该算法的时间复杂度:
+\begin{equation}
+T(n) = 5*n = O(n)
+\end{equation}
+
+
+\end{CJK*}
+\end{document}

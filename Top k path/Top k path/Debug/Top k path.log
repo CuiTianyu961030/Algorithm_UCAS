@@ -1,0 +1,34 @@
+﻿生成启动时间为 2018/10/21 19:22:57。
+     1>项目“E:\C Project\Top k path\Top k path\Top k path.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\Top k path.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+         g:\Microsoft Visual Studio 2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Top k path.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Top k path.cpp"
+         Top k path.cpp
+     1>e:\c project\top k path\top k path\top k path.cpp(18): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+     1>e:\c project\top k path\top k path\top k path.cpp(19): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+     1>e:\c project\top k path\top k path\top k path.cpp(22): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         g:\Microsoft Visual Studio 2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\C Project\Top k path\Debug\Top k path.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Top k path.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\C Project\Top k path\Debug\Top k path.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\C Project\Top k path\Debug\Top k path.lib" /MACHINE:X86 "Debug\Top k path.exe.embed.manifest.res"
+         Debug\stdafx.obj
+         "Debug\Top k path.obj"
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Top k path.exe.embed.manifest" /manifest "Debug\Top k path.exe.intermediate.manifest"
+         所有输出均为最新。
+       LinkEmbedManifest:
+         所有输出均为最新。
+         Top k path.vcxproj -> E:\C Project\Top k path\Debug\Top k path.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug\Top k path.unsuccessfulbuild”。
+         正在对“Debug\Top k path.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\C Project\Top k path\Top k path\Top k path.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.37

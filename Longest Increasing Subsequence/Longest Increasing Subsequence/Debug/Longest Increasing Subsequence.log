@@ -1,0 +1,34 @@
+﻿生成启动时间为 2018/10/20 23:48:19。
+     1>项目“E:\C Project\Longest Increasing Subsequence\Longest Increasing Subsequence\Longest Increasing Subsequence.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\Longest Increasing Subsequence.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+         g:\Microsoft Visual Studio 2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Longest Increasing Subsequence.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Longest Increasing Subsequence.cpp"
+         Longest Increasing Subsequence.cpp
+     1>e:\c project\longest increasing subsequence\longest increasing subsequence\longest increasing subsequence.cpp(17): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+     1>e:\c project\longest increasing subsequence\longest increasing subsequence\longest increasing subsequence.cpp(20): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+     1>e:\c project\longest increasing subsequence\longest increasing subsequence\longest increasing subsequence.cpp(22): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 g:\microsoft visual studio 2010\vc\include\stdio.h(304) : 参见“scanf”的声明
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         g:\Microsoft Visual Studio 2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\C Project\Longest Increasing Subsequence\Debug\Longest Increasing Subsequence.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Longest Increasing Subsequence.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\C Project\Longest Increasing Subsequence\Debug\Longest Increasing Subsequence.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\C Project\Longest Increasing Subsequence\Debug\Longest Increasing Subsequence.lib" /MACHINE:X86 "Debug\Longest Increasing Subsequence.exe.embed.manifest.res"
+         "Debug\Longest Increasing Subsequence.obj"
+         Debug\stdafx.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Longest Increasing Subsequence.exe.embed.manifest" /manifest "Debug\Longest Increasing Subsequence.exe.intermediate.manifest"
+         所有输出均为最新。
+       LinkEmbedManifest:
+         所有输出均为最新。
+         Longest Increasing Subsequence.vcxproj -> E:\C Project\Longest Increasing Subsequence\Debug\Longest Increasing Subsequence.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug\Longest Increasing Subsequence.unsuccessfulbuild”。
+         正在对“Debug\Longest Increasing Subsequence.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\C Project\Longest Increasing Subsequence\Longest Increasing Subsequence\Longest Increasing Subsequence.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.66

@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "the kth number", "the kth number\the kth number.vcxproj", "{319560FB-26A9-4A8A-9A0C-949D11EC184C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{319560FB-26A9-4A8A-9A0C-949D11EC184C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{319560FB-26A9-4A8A-9A0C-949D11EC184C}.Debug|Win32.Build.0 = Debug|Win32
+		{319560FB-26A9-4A8A-9A0C-949D11EC184C}.Release|Win32.ActiveCfg = Release|Win32
+		{319560FB-26A9-4A8A-9A0C-949D11EC184C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

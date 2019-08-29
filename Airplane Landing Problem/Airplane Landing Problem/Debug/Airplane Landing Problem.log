@@ -1,0 +1,34 @@
+﻿生成启动时间为 2018/12/15 0:08:04。
+     1>项目“E:\C Project\Airplane Landing Problem\Airplane Landing Problem\Airplane Landing Problem.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\Airplane Landing Problem.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+         g:\Microsoft Visual Studio 2010\VC\bin\CL.exe /c /I"E:\glpk-4.65\src" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Airplane Landing Problem.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Airplane Landing Problem.cpp"
+         Airplane Landing Problem.cpp
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(25): warning C4305: “初始化”: 从“int”到“float”截断
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(47): warning C4305: “初始化”: 从“int”到“float”截断
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(177): warning C4018: “<”: 有符号/无符号不匹配
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(180): warning C4018: “<”: 有符号/无符号不匹配
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(134): warning C4101: “s”: 未引用的局部变量
+     1>e:\c project\airplane landing problem\airplane landing problem\airplane landing problem.cpp(134): warning C4101: “t”: 未引用的局部变量
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         g:\Microsoft Visual Studio 2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\C Project\Airplane Landing Problem\Debug\Airplane Landing Problem.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "E:\glpk-4.65\w64\glpk.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Airplane Landing Problem.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\C Project\Airplane Landing Problem\Debug\Airplane Landing Problem.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\C Project\Airplane Landing Problem\Debug\Airplane Landing Problem.lib" /MACHINE:X86 "Debug\Airplane Landing Problem.exe.embed.manifest.res"
+         "Debug\Airplane Landing Problem.obj"
+         Debug\stdafx.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Airplane Landing Problem.exe.embed.manifest" /manifest "Debug\Airplane Landing Problem.exe.intermediate.manifest"
+         所有输出均为最新。
+       LinkEmbedManifest:
+         所有输出均为最新。
+         Airplane Landing Problem.vcxproj -> E:\C Project\Airplane Landing Problem\Debug\Airplane Landing Problem.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug\Airplane Landing Problem.unsuccessfulbuild”。
+         正在对“Debug\Airplane Landing Problem.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\C Project\Airplane Landing Problem\Airplane Landing Problem\Airplane Landing Problem.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.38

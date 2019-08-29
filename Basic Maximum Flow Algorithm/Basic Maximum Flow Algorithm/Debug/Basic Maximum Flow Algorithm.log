@@ -1,0 +1,24 @@
+﻿生成启动时间为 2019/1/8 9:11:31。
+     1>项目“E:\C Project\Basic Maximum Flow Algorithm\Basic Maximum Flow Algorithm\Basic Maximum Flow Algorithm.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“Debug\Basic Maximum Flow Algorithm.unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         所有输出均为最新。
+         g:\Microsoft Visual Studio 2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Basic Maximum Flow Algorithm.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "Basic Maximum Flow Algorithm.cpp"
+         Basic Maximum Flow Algorithm.cpp
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(541): warning C4244: “初始化”: 从“double”转换到“const int”，可能丢失数据
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(548): error C2059: 语法错误:“{”
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(548): error C2143: 语法错误 : 缺少“;”(在“{”的前面)
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(548): error C2143: 语法错误 : 缺少“;”(在“}”的前面)
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(550): error C2059: 语法错误:“{”
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(550): error C2143: 语法错误 : 缺少“;”(在“{”的前面)
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(550): error C2143: 语法错误 : 缺少“;”(在“}”的前面)
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(563): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(568): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(572): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
+     1>e:\c project\basic maximum flow algorithm\basic maximum flow algorithm\basic maximum flow algorithm.cpp(578): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
+     1>已完成生成项目“E:\C Project\Basic Maximum Flow Algorithm\Basic Maximum Flow Algorithm\Basic Maximum Flow Algorithm.vcxproj”(build 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:00.52
