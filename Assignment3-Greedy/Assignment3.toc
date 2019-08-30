@@ -6,7 +6,7 @@
 \contentsline {section}{\numberline {2}Problem Twe}{4}
 \contentsline {subsection}{\numberline {2.1}Optimal Substructure and greedy-choice property}{4}
 \contentsline {subsection}{\numberline {2.2}Algorithm Description}{4}
-\contentsline {subsection}{\numberline {2.3}Proof of Algorithm Correctness}{4}
+\contentsline {subsection}{\numberline {2.3}Proof of Algorithm Correctness}{5}
 \contentsline {subsection}{\numberline {2.4}Complexity Analysis}{5}
 \contentsline {section}{\numberline {3}Problem Three}{6}
 \contentsline {subsection}{\numberline {3.1}Optimal Substructure and greedy-choice property}{6}
